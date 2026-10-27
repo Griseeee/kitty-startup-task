@@ -1,0 +1,21 @@
+services:
+  backend:
+    build: ./backend
+    restart: always
+    expose:
+      - "8000"
+
+  frontend:
+    build: ./frontend
+    restart: always
+    expose:
+      - "80"
+
+  nginx:
+    build: ./nginx
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
