@@ -1,20 +1,23 @@
-import * as express from "express";
-import * as path from "path";
-
-const app = express();
-app.set('views', path.join(__dirname, '/'));
-app.set('view engine', 'jade');
+import express, { Request, Response } from 'express';
 
 const port: number = 3000;
 const backendUrl = "http://backend:3001";
 
-app.get('/', async (req, res) => {
-    const cat_data = await fetch(`${backendUrl}/cat_get`);
-    const data = await cat_data.text();
+const app = express();
 
-    res.render('index.jade', { title: "KITTY Frontend", cat_url: data });
+app.set('views', __dirname);
+app.set('view engine', 'jade');
+
+app.get('/', async (req: Request, res: Response) => {
+    try {
+        const cat_data = await fetch(`${backendUrl}/cat_get`);
+        const data = await cat_data.text();
+        res.render('index.jade', { title: "KITTY Frontend", cat_url: data });
+    } catch (err) {
+        res.status(500).send("Error fetching cat: " + err);
+    }
 });
 
 app.listen(port, () => {
-    console.log(`Frontend app listening on port ${port}`)
-})
+    console.log(`Frontend app listening on port ${port}`);
+});
